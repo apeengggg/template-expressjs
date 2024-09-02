@@ -80,8 +80,6 @@ const searchUser = async (param, roleId) => {
 
     query = query + ` LIMIT ${limit} OFFSET ${offset} `    
 
-    // console.log('query', query)
-    //console.log('query params', queryParams)
     try {
         const result = await db.manyOrNone(query, queryParams);
         let totalPages = Math.ceil(totalRows / param.perPage)
