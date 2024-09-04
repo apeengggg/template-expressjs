@@ -120,6 +120,48 @@ const createUser = async (param, createdBy) => {
     ])
 }
 
+const updateUser = async (param, updatedBy) => {
+    let queryParams = [param.name, param.email, param.phone, param.roleId, new Date(), updatedBy]
+
+    let query = 
+        ' UPDATE m_users ' + 
+        ' SET ' +
+        ' name = $1 ' + 
+        ' ,email = $2 ' + 
+        ' ,phone = $3 ' +
+        ' ,role_id = $4 ' +
+        ' ,updated_dt = $5 ' +
+        ' ,updated_by = $6 '
+
+    if(param.password != ""){
+        queryParams.push(param.password)
+        query += `,password = $${queryParams.length} `
+    }
+
+    queryParams.push(param.userId)
+    query += `WHERE user_id = $${queryParams.length}`
+    console.log("🚀 ~ updateUser ~ query:", query)
+    console.log("🚀 ~ updateUser ~ queryParams:", queryParams)
+    console.log("🚀 ~ updateUser ~ queryParams.length:", queryParams.length)
+
+
+    await db.none(query, queryParams)
+}
+
+const deleteUser = async (param, updatedBy) => {
+    let queryParams = [param.userId]
+
+    let query = 
+        ' UPDATE m_users ' + 
+        ' SET ' +
+        ' status = 0 ' +
+        'WHERE user_id = $1'
+
+    await db.none(query, queryParams)
+}
+
+
+
 const getOneSystem = async (param) => {
     let query = 'SELECT ' 
         + 'role_id, '
@@ -148,4 +190,19 @@ const getOneUserByNip = async (param) => {
     return await db.oneOrNone(query, param)
 }
 
-module.exports = {searchUser, createUser, getOneSystem, getOneUserByNip}
+const getOneUserByUserId = async (param) => {
+    let query = 'SELECT '
+    + 'user_id, '
+    + 'nip, '
+    + 'name '
+    + 'FROM '
+    + 'm_users '
+    + 'WHERE '
+    + 'user_id = $1 '
+
+    console.log("🚀 ~ getOneUserByUserId ~ query:", query)
+
+    return await db.oneOrNone(query, [param.userId])
+}
+
+module.exports = {searchUser, createUser, getOneSystem, getOneUserByNip, updateUser, deleteUser, getOneUserByUserId}

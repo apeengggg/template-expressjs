@@ -9,7 +9,7 @@ const searchUserParamsSchema = PagingBaseSchema.keys({
     name: Joi.string().allow("").max(50).optional(),
     email: Joi.string().allow("").max(100).optional(),
     phone: Joi.string().allow("").max(100).optional(),
-}).unknown(true)
+}).unknown(false)
 
 const createUserParamSchema = Joi.object().keys({
     roleId: Joi.string().max(50).required(),
@@ -18,6 +18,19 @@ const createUserParamSchema = Joi.object().keys({
     email: Joi.string().email().max(100).required(),
     phone: Joi.string().max(100).required(),
     password: Joi.string().min(4).required(),
-}).unknown(true)
+}).unknown(false)
 
-module.exports = { searchUserParamsSchema, createUserParamSchema }
+const updateUserParamSchema = Joi.object().keys({
+    userId: Joi.string().max(50).required(),
+    roleId: Joi.string().max(50).required(),
+    name: Joi.string().max(50).required(),
+    email: Joi.string().email().max(100).required(),
+    phone: Joi.string().max(100).required(),
+    password: Joi.string().allow("").optional(),
+}).unknown(false)
+
+const deleteUserParamSchema = Joi.object().keys({
+    userId: Joi.string().max(50).required(),
+}).unknown(false)
+
+module.exports = { searchUserParamsSchema, createUserParamSchema, updateUserParamSchema, deleteUserParamSchema}
