@@ -1,4 +1,4 @@
-const { Joi } = require('celebrate')
+const { Joi, celebrate, Segments } = require('celebrate')
 
 const { PagingBaseSchema } = require('./BaseSchema')
 
@@ -11,4 +11,13 @@ const searchUserParamsSchema = PagingBaseSchema.keys({
     phone: Joi.string().allow("").max(100).optional(),
 }).unknown(true)
 
-module.exports = { searchUserParamsSchema }
+const createUserParamSchema = Joi.object().keys({
+    roleId: Joi.string().max(50).required(),
+    nip: Joi.string().max(50).required(),
+    name: Joi.string().max(50).required(),
+    email: Joi.string().email().max(100).required(),
+    phone: Joi.string().max(100).required(),
+    password: Joi.string().min(4).required(),
+}).unknown(true)
+
+module.exports = { searchUserParamsSchema, createUserParamSchema }

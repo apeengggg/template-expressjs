@@ -10,16 +10,18 @@ const port = process.env.SERVER_PORT || 3000;
 const routes = require('./src/routes');
 const logger = require('./src/utils/LoggerUtil');
 
-app.use('/api/v1', routes);
-
 app.use(cors());
 app.use(BodyParser.json({ limit: '50mb' }));
 app.use(BodyParser.urlencoded({ limit: '50mb', extended: true }));
+
 
 // register base path '/'
 app.get('/', (req, res) =>
   res.send(`${process.env.APP_NAME}-${process.env.APP_VERSION}`)
 );
+
+app.use('/api/v1', routes);
+
 
 // register static file
 app.use(express.static(__dirname + '/public'));

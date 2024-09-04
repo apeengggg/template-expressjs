@@ -97,4 +97,55 @@ const searchUser = async (param, roleId) => {
     
 }
 
-module.exports = {searchUser}
+const createUser = async (param, createdBy) => {
+    let query = 
+        ' INSERT INTO m_users ' + 
+        ' (user_id, role_id, nip, name, email, phone, password, created_dt, created_by, updated_dt, updated_by) ' + 
+        ' VALUES ' + 
+        ' ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) '
+
+    let dt = new Date()
+    await db.none(query, [
+        param.userId, 
+        param.roleId, 
+        param.nip,
+        param.name,
+        param.email,
+        param.phone,
+        param.password,        
+        dt, 
+        createdBy, 
+        dt, 
+        createdBy
+    ])
+}
+
+const getOneSystem = async (param) => {
+    let query = 'SELECT ' 
+        + 'role_id, '
+        + 'role_name '
+        + 'FROM '
+        + 'm_roles '
+        + 'WHERE '
+        + 'role_id = ${roleId} '
+
+        return await db.oneOrNone(query, param)
+}
+
+const getOneUserByNip = async (param) => {
+    console.log("🚀 ~ getOneUserByNip ~ param:", param)
+    let query = 'SELECT '
+    + 'user_id, '
+    + 'nip, '
+    + 'name '
+    + 'FROM '
+    + 'm_users '
+    + 'WHERE '
+    + 'nip = ${nip} '
+ 
+    console.log("🚀 ~ getOneUserByNip ~ query:", query)
+
+    return await db.oneOrNone(query, param)
+}
+
+module.exports = {searchUser, createUser, getOneSystem, getOneUserByNip}
