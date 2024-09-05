@@ -61,7 +61,7 @@ class UserController {
                 if(hash != undefined) {
                     body.password = hash
                     body.foto = 'foto-profile/'+foto_file_name
-                    console.log("🚀 ~ UserController ~ doCreate ~ body:", body)
+                    // console.log("🚀 ~ UserController ~ doCreate ~ body:", body)
                     await createUser(body, "")
                     Ok(res, 'User created successfully')
                 } else {

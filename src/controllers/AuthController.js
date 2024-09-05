@@ -35,6 +35,7 @@ class AuthController {
                     Ok(res, 'Login success', { 
                         user_id: user.user_id, 
                         name: user.name,
+                        foto_profile: user.photo,
                         role_id: user.role_id,
                         role_name: user.role_name,
                         permission: object_permission,
