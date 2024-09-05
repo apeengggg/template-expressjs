@@ -1,8 +1,8 @@
 const { Joi } = require('celebrate')
 
 const loginSchema = Joi.object().keys({
-    userId: Joi.string().max(20).required(),
+    email: Joi.string().max(100).required(),
     password: Joi.string().min(4).required(),
-}).unknown(true)
+}).unknown(false)
 
 module.exports = { loginSchema }

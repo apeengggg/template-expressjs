@@ -5,9 +5,12 @@ const { celebrate } = require('celebrate');
 
 const UserController = require('../controllers/UserController')
 const { searchUserParamsSchema, createUserParamSchema, updateUserParamSchema, deleteUserParamSchema } = require('../schemas/UserSchema')
+const {JwtFilter} = require('../middleware/RequestFilter')
 
 // base route /users
 const ctrl = new UserController()
+
+router.all('/*', JwtFilter);
 
 router.route('/')
     .get( celebrate({ query: searchUserParamsSchema }), ctrl.doSearch)

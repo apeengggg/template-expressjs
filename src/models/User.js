@@ -193,6 +193,7 @@ const getOneUserByNip = async (param) => {
 const getOneUserByUserId = async (param) => {
     let query = 'SELECT '
     + 'user_id, '
+    + 'role_id, '
     + 'nip, '
     + 'name '
     + 'FROM '
@@ -205,4 +206,20 @@ const getOneUserByUserId = async (param) => {
     return await db.oneOrNone(query, [param.userId])
 }
 
-module.exports = {searchUser, createUser, getOneSystem, getOneUserByNip, updateUser, deleteUser, getOneUserByUserId}
+const getUserFromEmail = async (param) => {
+    let query = 'SELECT '
+    + 'u.user_id, '
+    + 'u.email, '
+    + 'u.password, '
+    + 'u.role_id, '
+    + 'r.role_name '
+    + 'FROM '
+    + 'm_users u '
+    + 'LEFT JOIN m_roles r ON u.role_id = r.role_id  '
+    + 'WHERE '
+    + 'u.email = $1 '
+
+    return await db.oneOrNone(query, [param.email])
+}
+
+module.exports = {searchUser, createUser, getOneSystem, getOneUserByNip, updateUser, deleteUser, getOneUserByUserId, getUserFromEmail}

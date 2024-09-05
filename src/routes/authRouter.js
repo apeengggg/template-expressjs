@@ -11,6 +11,5 @@ const authRouter = express.Router()
 
 // base route /auth
 authRouter.post('/login', celebrate({ body: loginSchema}), ctrl.login)
-authRouter.post('/logout', ReqFilter.JwtFilter, ctrl.logout)
 
 module.exports = authRouter

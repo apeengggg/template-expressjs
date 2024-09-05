@@ -1,7 +1,7 @@
-const { Unauthorized } = require('../helper/ResponseUtil')
-const { verifyJwt } = require('../helper/JwtUtil')
-const logger = require('../helper/LoggerUtil')
-const { getOneUser } = require('../model/User')
+const { Unauthorized } = require('../utils/ResponseUtil')
+const { verifyJwt } = require('../utils/JwtUtil')
+const logger = require('../utils/LoggerUtil')
+const { getOneUserByUserId } = require('../models/User')
 
 const InfoFilter = (req, res, next) => {
     logger.info(`hostname: ${req.hostname}, ip: ${req.ip}`)
@@ -42,18 +42,16 @@ const JwtFilter = async (req, res, next) => {
     if(token) {
         if(verifyJwt(req, token)) {
             const { userId, roleId } = req.app.locals
-            const userObj = await getOneUser(userId)
+            const userObj = await getOneUserByUserId({userId: userId})
             if(userObj == null) {
                 logger.info(`User Id: ${userId} is not exists, probably deleted.`)
                 Unauthorized(res, 'User does not exist anymore')
-            } else if(userObj.roleId != roleId) {
+            } else if(userObj.role_id != roleId) {
                 logger.info('Token is not valid because role has been changed')
                 Unauthorized(res, 'Token is not valid because role has been changed')
             } else {
                 if(userObj != null) {
                     req.app.locals.name = userObj.name
-                    req.app.locals.lv_wilayah = userObj.lvWilayah
-                    req.app.locals.id_wilayah = userObj.idWilayah
                 }
                 next()
             }
