@@ -2,6 +2,7 @@ const { Unauthorized } = require('../utils/ResponseUtil')
 const { verifyJwt } = require('../utils/JwtUtil')
 const logger = require('../utils/LoggerUtil')
 const { getOneUserByUserId } = require('../models/User')
+const { getPermissionByRoleIdAndFunctionId } = require('../models/Permission')
 
 const InfoFilter = (req, res, next) => {
     logger.info(`hostname: ${req.hostname}, ip: ${req.ip}`)
@@ -65,4 +66,34 @@ const JwtFilter = async (req, res, next) => {
     }
 }
 
-module.exports = { InfoFilter, JwtFilter }
+const checkAccess = async (req, functionId) => {
+    const { userId, roleId } = req.app.locals
+
+    if(userId && roleId && userId != "" && roleId != "") {
+        logger.info(`who: ${userId}, role: ${roleId}`)
+        
+        const permission = await getPermissionByRoleIdAndFunctionId(roleId, functionId)
+
+        logger.info(`function id: [${functionId}], permission: ${JSON.stringify(permission)}`)
+
+        if(permission != null) {
+            const { allowread, allowcreate, allowupdate, allowdelete, function_name } = permission
+
+            let hasAccess = false
+            if(req.method == 'GET' && allowread == 1) {
+                hasAccess = true
+            } else if(req.method == 'POST' && allowcreate == 1) {
+                hasAccess = true
+            } else if(req.method == 'PUT' && allowupdate == 1) {
+                hasAccess = true
+            } else if(req.method == 'DELETE' && allowdelete == 1) {
+                hasAccess = true
+            }
+
+            return hasAccess
+        }
+    }
+    return false
+}
+
+module.exports = { InfoFilter, JwtFilter, checkAccess }
