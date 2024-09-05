@@ -2,12 +2,14 @@ const { db, getTotalRows } = require('../utils/DBUtils')
 
 const getPermissionById = async (param) => {
     let query = 'SELECT ' 
-        + 'create_permission, read_permission, update_permission, delete_permission, function_id '
-        + 'FROM '
-        + 'm_permissions '
-        + 'WHERE '
-        + 'role_id = ${roleId} '
-
+    + 'f.function_id, f.function_name, f.parent_function_id, create_permission, read_permission, update_permission, delete_permission '
+    + 'FROM '
+    + 'm_functions f '
+    + 'LEFT JOIN m_permissions p ON p.function_id = f.function_id '
+    + 'WHERE '
+    + 'p.role_id = ${roleId} or f.parent_function_id IS NULL'
+    
+    console.log("🚀 ~ getPermissionById ~ query:", query)
         return await db.manyOrNone(query, param)
 }
 
