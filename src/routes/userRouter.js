@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const { celebrate } = require('celebrate');
-const {Unauthorized} = require('../utils/ResponseUtil')
+const {Forbidden} = require('../utils/ResponseUtil')
 const UserController = require('../controllers/UserController')
 const { searchUserParamsSchema, createUserParamSchema, updateUserParamSchema, deleteUserParamSchema } = require('../schemas/UserSchema')
 const {JwtFilter, checkAccess} = require('../middleware/RequestFilter')
@@ -15,7 +15,7 @@ const RoleFilter = async(req, res, next) => {
     if(await checkAccess(req, FUNCTION_ID)) {
         next()
     } else {
-        Unauthorized(res, 'Unauthorized Access')
+        Forbidden(res, 'Forbidden Access')
     }
 }
 

@@ -10,6 +10,10 @@ const Unauthorized = (res, msg) => {
     createMsg(res, 401, msg, undefined, "Unauthorized")
 }
 
+const Forbidden = (res, msg) => {
+    createMsg(res, 403, msg, undefined, "Forbidden Access")
+}
+
 const InternalServerErr = (res, msg) => {
     createMsg(res, 500, msg, undefined, "Internal Server Error")
 }
@@ -33,4 +37,4 @@ const createMsg = (res, statusCode, message = "", data, error) => {
     })
 }
 
-module.exports = { Ok, BadRequest, Unauthorized, InternalServerErr, SearchOk }
+module.exports = { Ok, BadRequest, Unauthorized, InternalServerErr, SearchOk, Forbidden }
