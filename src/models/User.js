@@ -63,7 +63,7 @@ const searchUser = async (param, roleId) => {
     }
 
     // get total rows
-    console.log("🚀 ~ searchUser ~ queryParams:", query, queryParams)
+    // console.log("🚀 ~ searchUser ~ queryParams:", query, queryParams)
     let totalRows = await getTotalRows(query, queryParams)
     // console.log('total rows', totalRows)
 
@@ -100,9 +100,9 @@ const searchUser = async (param, roleId) => {
 const createUser = async (param, createdBy) => {
     let query = 
         ' INSERT INTO m_users ' + 
-        ' (user_id, role_id, nip, name, email, phone, password, created_dt, created_by, updated_dt, updated_by) ' + 
+        ' (user_id, role_id, nip, name, email, phone, password, photo, created_dt, created_by, updated_dt, updated_by) ' + 
         ' VALUES ' + 
-        ' ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) '
+        ' ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) '
 
     let dt = new Date()
     await db.none(query, [
@@ -113,6 +113,7 @@ const createUser = async (param, createdBy) => {
         param.email,
         param.phone,
         param.password,        
+        param.foto,        
         dt, 
         createdBy, 
         dt, 
@@ -140,9 +141,9 @@ const updateUser = async (param, updatedBy) => {
 
     queryParams.push(param.userId)
     query += `WHERE user_id = $${queryParams.length}`
-    console.log("🚀 ~ updateUser ~ query:", query)
-    console.log("🚀 ~ updateUser ~ queryParams:", queryParams)
-    console.log("🚀 ~ updateUser ~ queryParams.length:", queryParams.length)
+    // console.log("🚀 ~ updateUser ~ query:", query)
+    // console.log("🚀 ~ updateUser ~ queryParams:", queryParams)
+    // console.log("🚀 ~ updateUser ~ queryParams.length:", queryParams.length)
 
 
     await db.none(query, queryParams)
@@ -175,7 +176,7 @@ const getOneSystem = async (param) => {
 }
 
 const getOneUserByNip = async (param) => {
-    console.log("🚀 ~ getOneUserByNip ~ param:", param)
+    // console.log("🚀 ~ getOneUserByNip ~ param:", param)
     let query = 'SELECT '
     + 'user_id, '
     + 'nip, '
@@ -185,7 +186,7 @@ const getOneUserByNip = async (param) => {
     + 'WHERE '
     + 'nip = ${nip} '
  
-    console.log("🚀 ~ getOneUserByNip ~ query:", query)
+    // console.log("🚀 ~ getOneUserByNip ~ query:", query)
 
     return await db.oneOrNone(query, param)
 }
@@ -201,7 +202,7 @@ const getOneUserByUserId = async (param) => {
     + 'WHERE '
     + 'user_id = $1 '
 
-    console.log("🚀 ~ getOneUserByUserId ~ query:", query)
+    // console.log("🚀 ~ getOneUserByUserId ~ query:", query)
 
     return await db.oneOrNone(query, [param.userId])
 }

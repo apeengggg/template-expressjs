@@ -10,10 +10,17 @@ const port = process.env.SERVER_PORT || 3000;
 const routes = require('./src/routes');
 const logger = require('./src/utils/LoggerUtil');
 
+const fileUpload = require('express-fileupload')
+
 app.use(cors());
 app.use(BodyParser.json({ limit: '50mb' }));
 app.use(BodyParser.urlencoded({ limit: '50mb', extended: true }));
 
+app.use(fileUpload({
+  limits: { fileSize: 1 * 1024 * 1024 },
+}));
+
+app.use('/foto-profile', express.static('public'));
 
 // register base path '/'
 app.get('/', (req, res) =>

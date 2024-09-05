@@ -5,6 +5,8 @@ const { searchUser, createUser, getOneSystem, getOneUserByNip, updateUser, delet
 const bcrypt = require('bcrypt')
 const saltRounds = parseInt(process.env.SALT_ROUND)
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+const fs = require('fs');
 
 class UserController {
     
@@ -26,32 +28,46 @@ class UserController {
 
     async doCreate(req, res){
         const body = req.body
-        console.log("🚀 ~ UserController ~ doCreate ~ body:", req.body)
+        const uploadDir = path.resolve(__dirname, '../..', 'public', 'foto-profile');
+
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        // console.log("🚀 ~ UserController ~ doCreate ~ body:", req.body)
         try{
             const userByNip = await getOneUserByNip({nip: body.nip})
-            console.log("🚀 ~ UserController ~ doCreate ~ userByNip:", userByNip)
+            // console.log("🚀 ~ UserController ~ doCreate ~ userByNip:", userByNip)
             if(userByNip != null) {
                 BadRequest(res, GetMsg('found.duplicate', 'NIP', body.nip))
                 return
             }
 
             const role = await getOneSystem({roleId: body.roleId})
-            console.log("🚀 ~ UserController ~ doCreate ~ role:", role)
+            // console.log("🚀 ~ UserController ~ doCreate ~ role:", role)
             if(role == null) {
                 BadRequest(res, GetMsg('not.found.in.master', 'Role Id', body.roleId))
                 return
             }
 
-            let hash = await bcrypt.hash(body.password, saltRounds)
-            if(hash != undefined) {
-                body.password = hash
-                body.userId = uuidv4()
-                console.log("🚀 ~ UserController ~ doCreate ~ body:", body)
-                await createUser(body, "")
-                Ok(res, 'User created successfully')
-            } else {
-                InternalServerErr(res, "Error during saving data")
-            }
+            body.userId = uuidv4()
+            let foto = req.files.foto, foto_file_name = body.userId+'_'+foto.name, upload_path = path.join(uploadDir, foto_file_name)
+            // console.log('uploadpath', upload_path)
+            foto.mv(upload_path, async function(err){
+                if(err){
+                    logger.error('UserController.doCreate', 'Error Upload Photo Profile'); return BadRequest(res, 'Bad Request')
+                }
+
+                let hash = await bcrypt.hash(body.password, saltRounds)
+                if(hash != undefined) {
+                    body.password = hash
+                    body.foto = 'foto-profile/'+foto_file_name
+                    console.log("🚀 ~ UserController ~ doCreate ~ body:", body)
+                    await createUser(body, "")
+                    Ok(res, 'User created successfully')
+                } else {
+                    InternalServerErr(res, "Error during saving data")
+                }
+            })
         }catch(err) {
             logger.error('UserController.doCreate', err)
             BadRequest(res, "Bad Request")

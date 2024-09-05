@@ -9,7 +9,7 @@ const {JwtFilter, checkAccess} = require('../middleware/RequestFilter')
 
 // base route /users
 const ctrl = new UserController()
-const FUNCTION_ID = 'F001'
+const FUNCTION_ID = 'FM001'
 
 const RoleFilter = async(req, res, next) => {
     if(await checkAccess(req, FUNCTION_ID)) {
