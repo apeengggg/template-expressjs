@@ -1,4 +1,4 @@
-const { BadRequest, SearchOk, Ok } = require('../utils/ResponseUtil')
+const { BadRequest, SearchOk, Ok, InternalServerErr } = require('../utils/ResponseUtil')
 const logger = require('../utils/LoggerUtil')
 const { GetMsg } = require('../utils/MessageUtil')
 const { searchUser, createUser, getOneSystem, getOneUserByNip, updateUser, deleteUser, getOneUserByUserId} = require('../models/User')
@@ -70,7 +70,7 @@ class UserController {
             })
         }catch(err) {
             logger.error('UserController.doCreate', err)
-            BadRequest(res, "Bad Request")
+            InternalServerErr(res, "Internal Server Error")
         }
     }
 
@@ -107,7 +107,7 @@ class UserController {
             Ok(res, 'User updated successfully')
         }catch(err) {
             logger.error('UserController.doUpdate', err)
-            BadRequest(res, "Bad Request")
+            InternalServerErr(res, "Internal Server Error")
         }
     }
 
@@ -127,7 +127,7 @@ class UserController {
             Ok(res, 'User deleted successfully')
         }catch(err) {
             logger.error('UserController.doDelete', err)
-            BadRequest(res, "Bad Request")
+            InternalServerErr(res, "Internal Server Error")
         }
     }
 }
