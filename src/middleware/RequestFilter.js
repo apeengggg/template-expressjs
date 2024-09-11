@@ -66,7 +66,8 @@ const JwtFilter = async (req, res, next) => {
     }
 }
 
-const checkAccess = async (req, functionId) => {
+const checkAccess = async (req) => {
+    const functionId = req.headers.FUNCTION_ID
     const { userId, roleId } = req.app.locals
 
     if(userId && roleId && userId != "" && roleId != "") {
