@@ -33,10 +33,10 @@ class UserController {
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
-        // console.log("🚀 ~ UserController ~ doCreate ~ body:", req.body)
+
         try{
             const userByNip = await getOneUserByNip({nip: body.nip})
-            // console.log("🚀 ~ UserController ~ doCreate ~ userByNip:", userByNip)
+
             if(userByNip != null) {
                 BadRequest(res, GetMsg('found.duplicate', 'NIP', body.nip))
                 return
